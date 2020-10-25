@@ -1,0 +1,3 @@
+guardar en /home/fernando/Documentos/IPN/Compiladores/Práctica1AFNAFD/prueba.txt
+agregar transicion 110 2 a
+eliminar transicion 110 2 a
