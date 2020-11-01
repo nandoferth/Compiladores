@@ -4,7 +4,7 @@
 import os
 import re 
 
-class AFN:
+class AFD:
 
   transicion = ''
   eliminartransicion = ''
@@ -20,13 +20,15 @@ class AFN:
     pass
 
   def cargar_desde(self, fname):
-    f = open(fname, "a")
-    f.close()
-    #print(self.error3)
+    if os.path.isfile(fname):
+      f = open(fname, "a")
+      f.close()
+    else:
+      print(self.error3)
 
   def guardar_en(self, gname):
-    if os.path.sifile(gname):
-      linea = self.verificar
+    if os.path.isfile(gname):
+      linea = self.verifica()
       if linea != '' and self.verifica_archivo(gname) != False:
         if self.transicion != '':
           #print(linea)
@@ -38,7 +40,7 @@ class AFN:
           #print(linea)
           self.establercer_inicial_final(gname, linea)
         self.limpia()
-      # else:
+      else:
         #print('No hay acciones o no hay inicio y final')
     else:
       print(self.error3)

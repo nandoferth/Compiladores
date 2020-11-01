@@ -1,2 +1,0 @@
-inicial:1
-finales:1023->12,E
