@@ -25,10 +25,10 @@ class Thompson:
   def get_afn(self):
     return self.afn
 
-  def convertir(self, er):
+  def convertir_er_afn(self, er): # Recibe la er y empezar a hacer toda la lógica que me llega al afn
     self.get_grupo(er, 0, 1) # esta funcion va sacar grupos de las expresion regular (((grupo 1)+r)*(grupo 2))e
     for grupo in range(len(self.grupo_transiciones) - 1, 0, -1): # cada grupo de la exp.reg se va a crear una transición
-      if len(self.afn) != 0:
+      if len(self.afn) != 0: # Comprueba si el afn es !=0 para hacer la unión de dos afn
         max_estado_transicion_izq = max(self.afn[max(self.afn)].values()) # por si se va intentar unir dos afn
       else:
         grupo_num = max(self.grupo_transiciones)
@@ -38,7 +38,7 @@ class Thompson:
 
   def get_grupo(self, er, idx, grupo_num):
     grupo = ''
-    while idx < len(er): # 1er -> (0 < 10) |set_grupo_transiciones
+    while idx < len(er): # 1er -> (0 < 10) |set_grupo_transiciones Hace una iteración sobre la er para sacar los grupos 
       if er[idx] == '(':
         self.orden_grupo.append(grupo_num + 1) # orden los grupos para que haga las operaciones en orden correcto
         idx = self.get_grupo(er[(idx + 1):], 0, grupo_num + 1) + idx # va ir entrando capa por capa para ver cual es la exprecion
@@ -46,10 +46,10 @@ class Thompson:
         if grupo != '':
           self.convierte_grupo_afn(grupo, grupo_num) # convierte la exp.reg del grupo n a un afn
         return idx + 1
-      else:
+      else: # Caso especial si no hay grupos 
         grupo = grupo + er[idx]
         if idx == len(er) - 1:
-          self.convierte_grupo_afn(grupo, grupo_num)
+          self.convierte_grupo_afn(grupo, grupo_num)  
       idx = idx + 1
     #return self.convertir_grupo_afn(er, 0)
   
@@ -61,16 +61,16 @@ class Thompson:
 
   def convertir_grupo_afn(self, er, index):
     if len(er) == index + 1:
-      return self.accion(er[index], er[index-1]) # retorna la transicion del estado
+      return self.operaciones(er[index], er[index-1]) # retorna la transicion del estado ya sea un or * union
     else:
       transicione_der = self.convertir_grupo_afn(er, index + 1) # retorna la transicio de lado derecho
       if er[index] == '|': # si dentro de la exp.reg hay un operador or hace la transiciones adecuadas 
-        self.cont_transiciones_or += 1
+        self.cont_transiciones_or += 1 # Contador especial or para los grupos y er del lado der. y izq.
         self.transiciones_der_or.update({self.cont_transiciones_or: {}}) # establece el estado 
         self.transiciones_der_or[self.cont_transiciones_or].update(transicione_der) # establece las transiciones del estado
-        return self.accion(er[index - 1], er[index - 2])
-      elif self.accion(er[index], er[index-1]) != None and er[index + 1] != '|' and er[index + 1] != '*': # Hace la concatenacion
-        transicione_izq = self.accion(er[index], er[index-1])
+        return self.operaciones(er[index - 1], er[index - 2])
+      elif self.operaciones(er[index], er[index-1]) != None and er[index + 1] != '|' and er[index + 1] != '*': # Hace la concatenacion
+        transicione_izq = self.operaciones(er[index], er[index-1])
         max_valor_izq = max(transicione_izq[max(transicione_izq.keys())].values()) - 1
         return self.concatenacion(transicione_izq, transicione_der, max_valor_izq)
       else:
@@ -132,9 +132,9 @@ class Thompson:
     self.transiciones_der_or.clear()
     return simbolo_izq
 
-  def operador_union_up(self,simbolo_izq):
+  def operador_union_up(self,simbolo_izq): # simbolo_izq: Recibe el valor del estado para que los una al final como una plantilla or
     copy_simbolo_izq = {}
-    for estado in simbolo_izq:
+    for estado in simbolo_izq: # Iteración para que recorre los valores de los estados 
       nuevo_afn_up = {
         (estado + 1): {}
       }
@@ -162,7 +162,7 @@ class Thompson:
         simbolo_izq.update(nuevo_afn_der)
     return simbolo_izq
 
-  def accion(self, e, e_siguiente):
+  def operaciones(self, e, e_siguiente): # Determinar qué operación deberá hacerse y retorna la transición 
     if e == '+':
       pass
     if len(self.ultima_operacion_union) != 0 and e != '*':

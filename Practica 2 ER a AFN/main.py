@@ -2,7 +2,7 @@ from thompson import Thompson
 er = 'fd*'
 def main():
   th = Thompson(er)
-  print(th.convertir(th.modifica_er(er)))
+  print(th.convertir_er_afn(th.modifica_er(er)))
   # estado = ''
   # const_der = (th.operador_estrella(estado, 0))
   # const_izq = (th.operador_estrella('b', 0))
