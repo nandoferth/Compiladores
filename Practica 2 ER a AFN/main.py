@@ -1,8 +1,8 @@
 from thompson import Thompson
-er = 'v|d|fd*'
+er = 'fd*'
 def main():
   th = Thompson(er)
-  print(th.convertir(th.modifica_er(er), 0))
+  print(th.convertir(th.modifica_er(er)))
   # estado = ''
   # const_der = (th.operador_estrella(estado, 0))
   # const_izq = (th.operador_estrella('b', 0))

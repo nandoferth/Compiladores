@@ -17,7 +17,7 @@ class Thompson:
     self.er = er
   
   def set_grupo_transiciones(self, transicion, grupo_num):
-    self.grupo_transiciones.update({ grupo_num: transicion })
+    self.grupo_transiciones.update({ grupo_num: transicion }) # Concatenar diccionarios
 
   def get_grupo_transiciones(self):
     return self.grupo_transiciones
@@ -26,10 +26,10 @@ class Thompson:
     return self.afn
 
   def convertir(self, er):
-    self.get_grupo(er, 0, 1)
-    for grupo in range(len(self.grupo_transiciones) - 1, 0, -1):
+    self.get_grupo(er, 0, 1) # esta funcion va sacar grupos de las expresion regular (((grupo 1)+r)*(grupo 2))e
+    for grupo in range(len(self.grupo_transiciones) - 1, 0, -1): # cada grupo de la exp.reg se va a crear una transición
       if len(self.afn) != 0:
-        max_estado_transicion_izq = max(self.afn[max(self.afn)].values())
+        max_estado_transicion_izq = max(self.afn[max(self.afn)].values()) # por si se va intentar unir dos afn
       else:
         grupo_num = max(self.grupo_transiciones)
         estado = max(self.grupo_transiciones[grupo])
@@ -40,11 +40,11 @@ class Thompson:
     grupo = ''
     while idx < len(er): # 1er -> (0 < 10) |set_grupo_transiciones
       if er[idx] == '(':
-        self.orden_grupo.append(grupo_num + 1)
-        idx = self.get_grupo(er[(idx + 1):], 0, grupo_num + 1) + idx
+        self.orden_grupo.append(grupo_num + 1) # orden los grupos para que haga las operaciones en orden correcto
+        idx = self.get_grupo(er[(idx + 1):], 0, grupo_num + 1) + idx # va ir entrando capa por capa para ver cual es la exprecion
       elif er[idx] == ')':
         if grupo != '':
-          self.convierte_grupo_afn(grupo, grupo_num)
+          self.convierte_grupo_afn(grupo, grupo_num) # convierte la exp.reg del grupo n a un afn
         return idx + 1
       else:
         grupo = grupo + er[idx]
@@ -53,9 +53,9 @@ class Thompson:
       idx = idx + 1
     #return self.convertir_grupo_afn(er, 0)
   
-  def convierte_grupo_afn(self, grupo_er, grupo_num):
-    grupo_afn = self.convertir_grupo_afn(grupo_er, 0) # -- 1
-    if self.cont_transiciones_or != 0: # -- 1
+  def convierte_grupo_afn(self, grupo_er, grupo_num): # te comprueba que no haga falta un operación de unión o *
+    grupo_afn = self.convertir_grupo_afn(grupo_er, 0) # -- 1 convertirá al grupo n a un afn
+    if self.cont_transiciones_or != 0: # -- 1 hace un chequeo que no haga falta una operación de union, es un caso especial para los grupos
       grupo_afn = self.operador_union(grupo_afn) # -- 1
     self.set_grupo_transiciones(grupo_afn, grupo_num) # -- 1
 
@@ -64,10 +64,10 @@ class Thompson:
       return self.accion(er[index], er[index-1]) # retorna la transicion del estado
     else:
       transicione_der = self.convertir_grupo_afn(er, index + 1) # retorna la transicio de lado derecho
-      if er[index] == '|':
+      if er[index] == '|': # si dentro de la exp.reg hay un operador or hace la transiciones adecuadas 
         self.cont_transiciones_or += 1
-        self.transiciones_der_or.update({self.cont_transiciones_or: {}})
-        self.transiciones_der_or[self.cont_transiciones_or].update(transicione_der)
+        self.transiciones_der_or.update({self.cont_transiciones_or: {}}) # establece el estado 
+        self.transiciones_der_or[self.cont_transiciones_or].update(transicione_der) # establece las transiciones del estado
         return self.accion(er[index - 1], er[index - 2])
       elif self.accion(er[index], er[index-1]) != None and er[index + 1] != '|' and er[index + 1] != '*': # Hace la concatenacion
         transicione_izq = self.accion(er[index], er[index-1])
@@ -77,7 +77,7 @@ class Thompson:
         self.ultima_operacion = '' 
         return transicione_der # retorna la transicion de la derecha para que no se repita el misma estado
 
-  def modifica_er(self, er):
+  def modifica_er(self, er): # lo tenía pensado usar en cuyo caso que alguien escibiera en la exp.reg un + haria la modificasion por la una plantilla de *
     idx = 0
     nueva_er = ''
     for e in er:
@@ -88,7 +88,7 @@ class Thompson:
       idx = idx + 1
     return nueva_er
 
-  def estado_base(self, simbolo):
+  def estado_base(self, simbolo): # pantillas es hacer las transiciones para un estado x
     in_simbolo = simbolo
     init_estado = 1
     fin_estado = 2
