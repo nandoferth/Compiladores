@@ -22,24 +22,19 @@ class AFN:
   def cargar_desde(self, fname):
     f = open(fname, "a")
     f.close()
-    #print(self.error3)
 
   def guardar_en(self, gname):
     if os.path.sifile(gname):
       linea = self.verificar
       if linea != '' and self.verifica_archivo(gname) != False:
         if self.transicion != '':
-          #print(linea)
           self.edita_archivo(gname, linea)
         elif self.eliminartransicion != '':
-          #print(linea)
           self.eliminar_transicion(gname, linea)
         elif self.establercer_inicial != '' or self.establercer_final != '':
-          #print(linea)
           self.establercer_inicial_final(gname, linea)
         self.limpia()
       # else:
-        #print('No hay acciones o no hay inicio y final')
     else:
       print(self.error3)
 
@@ -69,14 +64,12 @@ class AFN:
           self.obtenerinicial = re.findall(r'^(inicial:([1-9]+|[1-9][0-9]+))$', inicialline)[0][0]
         else:
           self.obtenerinicial = '' 
-        #print(self.obtenerinicial)
       else:
         inicialline = f.readline()
         if bool(re.findall(r'^(finales:([2-9]+|[1-9][0-9]+))$', inicialline)) != False:
           self.obtenerfinales = re.findall(r'^(finales:([2-9]+|[1-9][0-9]+))$', inicialline)[0][0]
         else:
           self.obtenerfinales = ''
-        #print(self.obtenerfinales)
       f.close()
     else:
       print(self.error2, oiname)
@@ -90,13 +83,6 @@ class AFN:
       f = open(gname, "r")
       lines = f.readlines()
       f.close
-      #print(linea)
-      # f = open(gname, "w")
-      # for x in lines:
-      #  if  bool(re.findall(r'^' + self.establecer + '$', linea)) == True or bool(re.findall(r'^' + self.establecer + '$', linea)) == True :
-      #    f.write(self.)
-      #else:
-      #  pass
     else:
       print(self.error2, oiname)
 
@@ -107,11 +93,9 @@ class AFN:
 
   def verifica_archivo(self,gname):
     verifica = False
-    #print('entro')
     f = open(gname, "r")
     if bool(re.findall(r'^(inicial:)([1-9]+|[1-9][0-9]+)$', f.readline())) != False:
       if bool(re.findall(r'^(finales:)([2-9]+|[1-9][0-9]+)$', f.readline())) != False:
-        #print('ok')
         verifica = True
       elif self.establercer_final !=  '':
         verifica = True
